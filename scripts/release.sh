@@ -96,31 +96,10 @@ EOF
 echo "[7/9] Updating documentation..."
 sed -i '' "s/## \[Unreleased\]/## [$NEW_VERSION] - $TODAY/" docs/CHANGELOG.md 2>/dev/null || true
 
-# 8. Build VSIX Package in Release Directory
+# 8. Build Bundled VSIX Package in Release Directory
 VSIX_PATH="$RELEASE_DIR/console-log-cleaner-$NEW_VERSION.vsix"
-echo "[8/9] Building VSIX package at $VSIX_PATH..."
-if npx @vscode/vsce package --no-git-tag-version --out "$VSIX_PATH" 2>/dev/null; then
-  echo "VSIX package built with @vscode/vsce."
-else
-  echo "Building VSIX archive via fallback zip packager..."
-  TMP_DIR=$(mktemp -d)
-  mkdir -p "$TMP_DIR/extension"
-  cp -r out package.json README.md LICENSE "$TMP_DIR/extension/"
-  cat << 'XML' > "$TMP_DIR/[Content_Types].xml"
-<?xml version="1.0" encoding="utf-8"?>
-<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
-  <Default Extension="json" ContentType="application/json" />
-  <Default Extension="js" ContentType="application/javascript" />
-  <Default Extension="md" ContentType="text/markdown" />
-  <Default Extension="txt" ContentType="text/plain" />
-  <Default Extension="xml" ContentType="text/xml" />
-</Types>
-XML
-  ABS_VSIX="$(pwd)/$VSIX_PATH"
-  rm -f "$ABS_VSIX"
-  (cd "$TMP_DIR" && zip -r -q "$ABS_VSIX" extension "[Content_Types].xml")
-  rm -rf "$TMP_DIR"
-fi
+echo "[8/9] Building bundled VSIX package at $VSIX_PATH..."
+node scripts/build-vsix.js
 
 # 9. Create Git Commit and Annotated Tag
 echo "[9/9] Creating git commit and annotated tag v$NEW_VERSION..."
