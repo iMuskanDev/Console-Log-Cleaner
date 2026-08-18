@@ -118,7 +118,7 @@ else
 XML
   ABS_VSIX="$(pwd)/$VSIX_PATH"
   rm -f "$ABS_VSIX"
-  (cd "$TMP_DIR" && zip -r -q "$ABS_VSIX" extension [Content_Types].xml)
+  (cd "$TMP_DIR" && zip -r -q "$ABS_VSIX" extension "[Content_Types].xml")
   rm -rf "$TMP_DIR"
 fi
 

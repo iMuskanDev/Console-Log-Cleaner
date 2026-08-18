@@ -48,7 +48,7 @@ else
   <Default Extension="xml" ContentType="text/xml" />
 </Types>
 XML
-  (cd "$TMP_DIR" && zip -r -q "$TMP_VSIX" extension [Content_Types].xml)
+  (cd "$TMP_DIR" && zip -r -q "$TMP_VSIX" extension "[Content_Types].xml")
   rm -rf "$TMP_DIR"
 fi
 
