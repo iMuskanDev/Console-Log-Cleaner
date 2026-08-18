@@ -1,0 +1,104 @@
+# ==========================================
+# Dependencies
+# ==========================================
+node_modules/
+.pnp/
+.pnp.js
+
+# ==========================================
+# Build / Compilation
+# ==========================================
+dist/
+out/
+build/
+coverage/
+
+# TypeScript
+*.tsbuildinfo
+
+# ==========================================
+# VS Code
+# ==========================================
+.vscode/*
+!.vscode/extensions.json
+!.vscode/launch.json
+!.vscode/tasks.json
+!.vscode/settings.json
+
+# VS Code Extension Test Data
+.vscode-test/
+
+# ==========================================
+# VSIX Packages
+# ==========================================
+*.vsix
+
+# Keep release artifacts only if intentionally committed
+# release/
+
+# ==========================================
+# Environment / Secrets
+# ==========================================
+.env
+.env.*
+!.env.example
+
+# ==========================================
+# Logs
+# ==========================================
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# ==========================================
+# OS Files
+# ==========================================
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# ==========================================
+# IDE
+# ==========================================
+.idea/
+*.iml
+
+# ==========================================
+# Temporary Files
+# ==========================================
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+
+# ==========================================
+# Test / Temporary Fixtures
+# ==========================================
+.tmp/
+temp/
+
+# ==========================================
+# ESLint / Tool Cache
+# ==========================================
+.eslintcache
+
+# ==========================================
+# Package Manager Cache
+# ==========================================
+.npm/
+.yarn/cache/
+.pnpm-store/
+
+# ==========================================
+# OS / Editor Backup
+# ==========================================
+*.bak
+*.orig

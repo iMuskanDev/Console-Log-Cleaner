@@ -1,0 +1,52 @@
+{
+  "name": "remove-console-statements",
+  "displayName": "Remove Console Statements",
+  "description": "Removes all console statements (console.log, console.warn, console.error, console.info, etc.) from current file or selected text.",
+  "version": "1.0.0",
+  "publisher": "developer",
+  "engines": {
+    "vscode": "^1.75.0"
+  },
+  "categories": [
+    "Formatters",
+    "Other"
+  ],
+  "main": "./out/extension.js",
+  "activationEvents": [
+    "onCommand:removeConsole.all",
+    "onCommand:removeConsole.selected",
+    "onCommand:removeConsole.workspace"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "removeConsole.all",
+        "title": "Remove All Console Logs (Current File)"
+      },
+      {
+        "command": "removeConsole.selected",
+        "title": "Remove Selected Console Logs"
+      },
+      {
+        "command": "removeConsole.workspace",
+        "title": "Remove All Console Logs (Entire Workspace)"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -w -p ./",
+    "test": "node ./out/test/runTest.js",
+    "test:unit": "mocha ./out/test/unitTest.test.js"
+  },
+  "devDependencies": {
+    "@types/mocha": "^10.0.1",
+    "@types/node": "^16.x",
+    "@types/vscode": "^1.75.0",
+    "@vscode/test-electron": "^2.3.0",
+    "glob": "^10.2.2",
+    "mocha": "^10.2.0",
+    "typescript": "^4.9.5"
+  }
+}
