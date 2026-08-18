@@ -1,52 +1,139 @@
 {
-  "name": "remove-console-statements",
-  "displayName": "Remove Console Statements",
-  "description": "Removes all console statements (console.log, console.warn, console.error, console.info, etc.) from current file or selected text.",
-  "version": "1.0.0",
-  "publisher": "developer",
+  "name": "console-log-cleaner",
+  "displayName": "Console Log Cleaner",
+  "description": "Find and safely remove console.log() statements from JavaScript and TypeScript files using AST parsing.",
+  "version": "0.1.0",
+  "publisher": "console-log-cleaner",
   "engines": {
     "vscode": "^1.75.0"
   },
   "categories": [
+    "Linters",
     "Formatters",
     "Other"
   ],
+  "keywords": [
+    "console.log",
+    "console log",
+    "remove console.log",
+    "console cleaner",
+    "javascript",
+    "typescript",
+    "debugging",
+    "code cleanup"
+  ],
   "main": "./out/extension.js",
   "activationEvents": [
-    "onCommand:removeConsole.all",
-    "onCommand:removeConsole.selected",
-    "onCommand:removeConsole.workspace"
+    "onLanguage:javascript",
+    "onLanguage:javascriptreact",
+    "onLanguage:typescript",
+    "onLanguage:typescriptreact"
   ],
   "contributes": {
     "commands": [
       {
-        "command": "removeConsole.all",
-        "title": "Remove All Console Logs (Current File)"
+        "command": "consoleLogCleaner.removeCurrentFile",
+        "title": "Console Log Cleaner: Remove Console Logs From Current File"
       },
       {
-        "command": "removeConsole.selected",
-        "title": "Remove Selected Console Logs"
+        "command": "consoleLogCleaner.removeWorkspace",
+        "title": "Console Log Cleaner: Remove Console Logs From Workspace"
       },
       {
-        "command": "removeConsole.workspace",
-        "title": "Remove All Console Logs (Entire Workspace)"
+        "command": "consoleLogCleaner.scanCurrentFile",
+        "title": "Console Log Cleaner: Scan Current File"
+      },
+      {
+        "command": "consoleLogCleaner.scanWorkspace",
+        "title": "Console Log Cleaner: Scan Workspace"
       }
-    ]
+    ],
+    "codeActions": [
+      {
+        "languages": [
+          "javascript",
+          "javascriptreact",
+          "typescript",
+          "typescriptreact"
+        ],
+        "providedCodeActionKinds": [
+          "quickfix"
+        ]
+      }
+    ],
+    "configuration": {
+      "type": "object",
+      "title": "Console Log Cleaner",
+      "properties": {
+        "consoleLogCleaner.includeTests": {
+          "type": "boolean",
+          "default": true,
+          "description": "Include test files when scanning or removing console.log() statements."
+        },
+        "consoleLogCleaner.includeNodeModules": {
+          "type": "boolean",
+          "default": false,
+          "description": "Include node_modules directory when scanning or removing statements. (Not recommended)"
+        },
+        "consoleLogCleaner.excludePatterns": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            "**/node_modules/**",
+            "**/.git/**",
+            "**/dist/**",
+            "**/build/**",
+            "**/out/**",
+            "**/coverage/**"
+          ],
+          "description": "Glob patterns for directories and files to exclude from workspace operations."
+        },
+        "consoleLogCleaner.showNotifications": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show status notifications upon completion of scanning and removal operations."
+        },
+        "consoleLogCleaner.confirmBeforeRemoval": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show a confirmation prompt before executing removal operations."
+        }
+      }
+    }
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/iMuskanDev/Console-Log-Cleaner.git"
+  },
+  "license": "MIT",
   "scripts": {
     "vscode:prepublish": "npm run compile",
     "compile": "tsc -p ./",
     "watch": "tsc -w -p ./",
-    "test": "node ./out/test/runTest.js",
-    "test:unit": "mocha ./out/test/unitTest.test.js"
+    "build": "npm run compile",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src --ext ts",
+    "format": "prettier --check \"src/**/*.ts\"",
+    "test": "npm run test:unit",
+    "test:unit": "mocha --require ./src/test/mochaSetup.js ./out/test/unitTest.test.js ./out/test/detector.test.js ./out/test/removal.test.js",
+    "test:integration": "node ./out/test/runTest.js",
+    "package": "vsce package",
+    "validate": "./scripts/validate.sh"
   },
   "devDependencies": {
     "@types/mocha": "^10.0.1",
     "@types/node": "^16.x",
     "@types/vscode": "^1.75.0",
+    "@typescript-eslint/eslint-plugin": "^5.59.0",
+    "@typescript-eslint/parser": "^5.59.0",
     "@vscode/test-electron": "^2.3.0",
+    "@vscode/vsce": "^2.19.0",
+    "eslint": "^8.38.0",
     "glob": "^10.2.2",
     "mocha": "^10.2.0",
+    "prettier": "^2.8.7",
     "typescript": "^4.9.5"
   }
 }

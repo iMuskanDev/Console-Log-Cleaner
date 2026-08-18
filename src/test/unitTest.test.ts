@@ -1,34 +1,45 @@
 import * as assert from 'assert';
-import { removeConsoleFromText } from '../extension';
+import * as vscode from 'vscode';
+import { JavaScriptAdapter } from '../languages/javascript/JavaScriptAdapter';
+import { LanguageRegistry } from '../languages/core/LanguageRegistry';
 
-describe('Remove Console Unit Tests', () => {
-    it('1. removes simple single-line console.log', () => {
-        const input = `const a = 5;\nconsole.log(a);\nconst b = 10;`;
-        const expected = `const a = 5;\nconst b = 10;`;
-        assert.strictEqual(removeConsoleFromText(input), expected);
-    });
+describe('Console Log Cleaner Integration & Unit Test Suite', () => {
+  let adapter: JavaScriptAdapter;
 
-    it('2. removes commented console.log', () => {
-        const input = `const a = 5;\n// console.log("debug", a);\nconst b = 10;`;
-        const expected = `const a = 5;\nconst b = 10;`;
-        assert.strictEqual(removeConsoleFromText(input), expected);
-    });
+  beforeEach(() => {
+    adapter = new JavaScriptAdapter();
+    const registry = LanguageRegistry.getInstance();
+    registry.clear();
+    registry.registerAdapter(adapter);
+  });
 
-    it('3. removes multiline console statements', () => {
-        const input = `function test() {\n    console.log(\n        "line 1",\n        "line 2"\n    );\n    return true;\n}`;
-        const expected = `function test() {\n    return true;\n}`;
-        assert.strictEqual(removeConsoleFromText(input), expected);
-    });
+  it('verifies LanguageRegistry lookup for JS/TS extensions', () => {
+    const registry = LanguageRegistry.getInstance();
+    assert.strictEqual(registry.isSupportedFile('app.ts'), true);
+    assert.strictEqual(registry.isSupportedFile('Component.tsx'), true);
+    assert.strictEqual(registry.isSupportedFile('script.js'), true);
+    assert.strictEqual(registry.isSupportedFile('View.jsx'), true);
+    assert.strictEqual(registry.isSupportedFile('notes.txt'), false);
+  });
 
-    it('4. removes console statements in catch blocks without touching catch block structure', () => {
-        const input = `try {\n    doSomething();\n} catch (err) {\n    console.error("Error processing async Slack message:", err);\n}`;
-        const expected = `try {\n    doSomething();\n} catch (err) {\n}`;
-        assert.strictEqual(removeConsoleFromText(input), expected);
-    });
+  it('verifies AST detection ignores string literals containing console.log', () => {
+    const source = `const query = "SELECT * FROM logs WHERE text = 'console.log'";`;
+    const uri = vscode.Uri.file('/mock/query.js');
+    const detections = adapter.detect(source, uri, 'javascript');
+    assert.strictEqual(detections.length, 0);
+  });
 
-    it('5. removes multiline console in catch blocks cleanly', () => {
-        const input = `try {\n    doSomething();\n} catch (err) {\n    console.error(\n        "Error processing async Slack message:",\n        err\n    );\n}`;
-        const expected = `try {\n    doSomething();\n} catch (err) {\n}`;
-        assert.strictEqual(removeConsoleFromText(input), expected);
-    });
+  it('verifies AST detection ignores comments containing console.log', () => {
+    const source = `// TODO: console.log("fix me");`;
+    const uri = vscode.Uri.file('/mock/todo.js');
+    const detections = adapter.detect(source, uri, 'javascript');
+    assert.strictEqual(detections.length, 0);
+  });
+
+  it('verifies detection of console.log inside React JSX component', () => {
+    const source = `import React from 'react';\nexport const Btn = () => {\n  console.log("rendering");\n  return <button>Click</button>;\n};`;
+    const uri = vscode.Uri.file('/mock/Btn.jsx');
+    const detections = adapter.detect(source, uri, 'javascriptreact');
+    assert.strictEqual(detections.length, 1);
+  });
 });

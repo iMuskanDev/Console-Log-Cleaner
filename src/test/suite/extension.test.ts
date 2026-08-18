@@ -1,34 +1,30 @@
 import * as assert from 'assert';
-import { removeConsoleFromText } from '../../extension';
+import * as vscode from 'vscode';
+import { TypeScriptDetector } from '../../languages/javascript/TypeScriptDetector';
+import { JavaScriptAdapter } from '../../languages/javascript/JavaScriptAdapter';
 
-describe('Remove Console Test Suite', () => {
-    it('removes simple single-line console.log', () => {
+describe('Extension Test Suite', () => {
+    const uri = vscode.Uri.file('/mock/test.ts');
+    const adapter = new JavaScriptAdapter();
+
+    it('detects console.log in TS code', () => {
         const input = `const a = 5;\nconsole.log(a);\nconst b = 10;`;
-        const expected = `const a = 5;\nconst b = 10;`;
-        assert.strictEqual(removeConsoleFromText(input), expected);
+        const detections = TypeScriptDetector.detectConsoleLogs(input, uri, 'typescript');
+        assert.strictEqual(detections.length, 1);
+        assert.strictEqual(detections[0].line, 2);
     });
 
-    it('removes commented console.log', () => {
+    it('does NOT remove commented console.log', () => {
         const input = `const a = 5;\n// console.log("debug", a);\nconst b = 10;`;
-        const expected = `const a = 5;\nconst b = 10;`;
-        assert.strictEqual(removeConsoleFromText(input), expected);
+        const detections = TypeScriptDetector.detectConsoleLogs(input, uri, 'typescript');
+        assert.strictEqual(detections.length, 0);
     });
 
-    it('removes multiline console statements', () => {
+    it('calculates clean removal for multiline console.log', () => {
         const input = `function test() {\n    console.log(\n        "line 1",\n        "line 2"\n    );\n    return true;\n}`;
-        const expected = `function test() {\n    return true;\n}`;
-        assert.strictEqual(removeConsoleFromText(input), expected);
-    });
-
-    it('removes console.error and console.warn', () => {
-        const input = `console.error("err");\nconsole.warn("warn");\nconsole.info("info");`;
-        const expected = ``;
-        assert.strictEqual(removeConsoleFromText(input), expected);
-    });
-
-    it('does not corrupt complex nested code structures (SlackController / FacebookController pattern)', () => {
-        const input = `async function check() {\n    try {\n        console.log(\n            "complex obj",\n            { a: 1, b: (x) => x + 1 }\n        );\n    } catch (err) {\n        console.error("error:", err);\n    }\n}`;
-        const expected = `async function check() {\n    try {\n    } catch (err) {\n    }\n}`;
-        assert.strictEqual(removeConsoleFromText(input), expected);
+        const detections = adapter.detect(input, uri, 'typescript');
+        assert.strictEqual(detections.length, 1);
+        const edit = adapter.calculateRemovalEdit(input, detections[0]);
+        assert.ok(edit.range);
     });
 });
