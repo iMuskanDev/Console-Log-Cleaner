@@ -2,6 +2,9 @@ const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
 
+process.env.COPYFILE_DISABLE = '1';
+process.env.COPY_EXTENDED_ATTRIBUTES_DISABLE = '1';
+
 console.log('Building bundled production extension via esbuild...');
 execSync('npx esbuild@0.17.19 src/extension.ts --bundle --outfile=out/extension.js --platform=node --external:vscode --target=node16', { stdio: 'inherit' });
 
@@ -20,7 +23,7 @@ const tmpDir = fs.mkdtempSync(path.join(require('os').tmpdir(), 'vsix-'));
 const extDir = path.join(tmpDir, 'extension');
 fs.mkdirSync(extDir, { recursive: true });
 
-// Copy package.json, README.md, LICENSE, icon.png, and out/
+// Copy package.json, README.md, LICENSE, icon.png
 fs.copyFileSync('package.json', path.join(extDir, 'package.json'));
 fs.copyFileSync('README.md', path.join(extDir, 'README.md'));
 fs.copyFileSync('LICENSE', path.join(extDir, 'LICENSE'));
@@ -28,19 +31,10 @@ if (fs.existsSync('icon.png')) {
   fs.copyFileSync('icon.png', path.join(extDir, 'icon.png'));
 }
 
-function copyDir(src, dest) {
-  fs.mkdirSync(dest, { recursive: true });
-  for (const entry of fs.readdirSync(src, { withFileTypes: true })) {
-    const srcPath = path.join(src, entry.name);
-    const destPath = path.join(dest, entry.name);
-    if (entry.isDirectory()) {
-      copyDir(srcPath, destPath);
-    } else {
-      fs.copyFileSync(srcPath, destPath);
-    }
-  }
-}
-copyDir('out', path.join(extDir, 'out'));
+// Copy bundled out/extension.js cleanly
+const extOutDir = path.join(extDir, 'out');
+fs.mkdirSync(extOutDir, { recursive: true });
+fs.copyFileSync('out/extension.js', path.join(extOutDir, 'extension.js'));
 
 // 2. Create [Content_Types].xml
 const contentTypes = `<?xml version="1.0" encoding="utf-8"?>
@@ -80,12 +74,12 @@ const manifest = `<?xml version="1.0" encoding="utf-8"?>
 </PackageManifest>`;
 fs.writeFileSync(path.join(tmpDir, 'extension.vsixmanifest'), manifest);
 
-// Zip into VSIX file
+// Zip into VSIX file without macOS extra fields (-X flag and COPYFILE_DISABLE=1)
 if (fs.existsSync(vsixPath)) {
   fs.unlinkSync(vsixPath);
 }
 
-execSync(`cd "${tmpDir}" && zip -r -q "${vsixPath}" extension "[Content_Types].xml" extension.vsixmanifest`, { stdio: 'inherit' });
+execSync(`cd "${tmpDir}" && COPYFILE_DISABLE=1 COPY_EXTENDED_ATTRIBUTES_DISABLE=1 zip -r -q -X "${vsixPath}" extension "[Content_Types].xml" extension.vsixmanifest`, { stdio: 'inherit' });
 fs.rmSync(tmpDir, { recursive: true, force: true });
 
-console.log(`VSIX package created successfully with icon at ${vsixPath}`);
+console.log(`VSIX package created successfully at ${vsixPath}`);
