@@ -128,7 +128,7 @@
     "typecheck": "tsc --noEmit",
     "lint": "eslint src --ext ts",
     "format": "prettier --check \"src/**/*.ts\"",
-    "test": "npm run test:unit",
+    "test": "npm run compile && npm run test:unit",
     "test:unit": "mocha --require ./src/test/mochaSetup.js ./out/test/unitTest.test.js ./out/test/detector.test.js ./out/test/removal.test.js",
     "test:integration": "node ./out/test/runTest.js",
     "package": "vsce package",
