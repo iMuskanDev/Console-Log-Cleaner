@@ -4,6 +4,7 @@
   "description": "Find and safely remove console.log() statements from JavaScript and TypeScript files using AST parsing.",
   "version": "0.1.0",
   "publisher": "console-log-cleaner",
+  "icon": "icon.png",
   "engines": {
     "vscode": "^1.75.0"
   },

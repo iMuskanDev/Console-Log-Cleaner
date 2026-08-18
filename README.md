@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="icon.png" alt="Console Log Cleaner Logo" width="180" />
+</p>
+
 # Console Log Cleaner
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https.mit-license.org)

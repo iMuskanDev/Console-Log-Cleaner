@@ -20,10 +20,13 @@ const tmpDir = fs.mkdtempSync(path.join(require('os').tmpdir(), 'vsix-'));
 const extDir = path.join(tmpDir, 'extension');
 fs.mkdirSync(extDir, { recursive: true });
 
-// Copy package.json, README.md, LICENSE, and out/
+// Copy package.json, README.md, LICENSE, icon.png, and out/
 fs.copyFileSync('package.json', path.join(extDir, 'package.json'));
 fs.copyFileSync('README.md', path.join(extDir, 'README.md'));
 fs.copyFileSync('LICENSE', path.join(extDir, 'LICENSE'));
+if (fs.existsSync('icon.png')) {
+  fs.copyFileSync('icon.png', path.join(extDir, 'icon.png'));
+}
 
 function copyDir(src, dest) {
   fs.mkdirSync(dest, { recursive: true });
@@ -46,6 +49,7 @@ const contentTypes = `<?xml version="1.0" encoding="utf-8"?>
   <Default Extension="json" ContentType="application/json" />
   <Default Extension="js" ContentType="application/javascript" />
   <Default Extension="md" ContentType="text/markdown" />
+  <Default Extension="png" ContentType="image/png" />
   <Default Extension="txt" ContentType="text/plain" />
   <Default Extension="xml" ContentType="text/xml" />
 </Types>`;
@@ -61,6 +65,7 @@ const manifest = `<?xml version="1.0" encoding="utf-8"?>
     <Tags>${pkg.keywords ? pkg.keywords.join(',') : ''}</Tags>
     <Categories>${pkg.categories ? pkg.categories.join(',') : ''}</Categories>
     <License>extension/LICENSE</License>
+    <Icon>extension/icon.png</Icon>
   </Metadata>
   <Installation>
     <InstallationTarget Id="Microsoft.VisualStudio.Code" Version="${pkg.engines.vscode}" />
@@ -70,6 +75,7 @@ const manifest = `<?xml version="1.0" encoding="utf-8"?>
     <Asset Type="Microsoft.VisualStudio.Code.Manifest" Path="extension/package.json" Addressable="true" />
     <Asset Type="Microsoft.VisualStudio.Services.Content.Details" Path="extension/README.md" Addressable="true" />
     <Asset Type="Microsoft.VisualStudio.Services.Content.License" Path="extension/LICENSE" Addressable="true" />
+    <Asset Type="Microsoft.VisualStudio.Services.Icons.Default" Path="extension/icon.png" Addressable="true" />
   </Assets>
 </PackageManifest>`;
 fs.writeFileSync(path.join(tmpDir, 'extension.vsixmanifest'), manifest);
@@ -82,4 +88,4 @@ if (fs.existsSync(vsixPath)) {
 execSync(`cd "${tmpDir}" && zip -r -q "${vsixPath}" extension "[Content_Types].xml" extension.vsixmanifest`, { stdio: 'inherit' });
 fs.rmSync(tmpDir, { recursive: true, force: true });
 
-console.log(`VSIX package created successfully at ${vsixPath}`);
+console.log(`VSIX package created successfully with icon at ${vsixPath}`);
