@@ -24,6 +24,10 @@
   ],
   "main": "./out/extension.js",
   "activationEvents": [
+    "onCommand:consoleLogCleaner.removeCurrentFile",
+    "onCommand:consoleLogCleaner.removeWorkspace",
+    "onCommand:consoleLogCleaner.scanCurrentFile",
+    "onCommand:consoleLogCleaner.scanWorkspace",
     "onLanguage:javascript",
     "onLanguage:javascriptreact",
     "onLanguage:typescript",
