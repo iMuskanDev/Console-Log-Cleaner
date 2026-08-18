@@ -2,7 +2,7 @@
   "name": "console-log-cleaner",
   "displayName": "Console Log Cleaner",
   "description": "Find and safely remove console.log() statements from JavaScript and TypeScript files using AST parsing.",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "publisher": "iMuskanDev",
   "icon": "icon.png",
   "engines": {
