@@ -1,0 +1,43 @@
+name: Publish Extension
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+jobs:
+  publish:
+    name: Build & Publish Extension
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js Environment
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Run Tests and Build VSIX Package
+        run: |
+          npm run test
+          node scripts/build-vsix.js
+
+      - name: Publish to Open VSX Registry
+        if: env.OVSX_PAT != ''
+        env:
+          OVSX_PAT: ${{ secrets.OVSX_PAT }}
+        run: |
+          npx ovsx publish release/*/*.vsix -p "$OVSX_PAT"
+
+      - name: Publish to VS Code Marketplace
+        if: env.VSCE_PAT != ''
+        env:
+          VSCE_PAT: ${{ secrets.VSCE_PAT }}
+        run: |
+          npx @vscode/vsce publish -p "$VSCE_PAT"
