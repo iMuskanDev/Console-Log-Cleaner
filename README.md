@@ -18,8 +18,7 @@ Whether you are shipping code to production, cleaning up leftover debug statemen
 
 If Console Log Cleaner saved you time or cleaned up your project, consider supporting development!
 
-<script async src="https://bondin.io/embed/v1.js"></script>
-<bondin-support username="imuskandev" label="Support me"></bondin-support>
+https://bondin.io/imuskandev/support
 
 ---
 
@@ -37,12 +36,12 @@ If Console Log Cleaner saved you time or cleaned up your project, consider suppo
 
 ## 📋 Supported Console Methods
 
-| Category | Supported Statements |
-| :--- | :--- |
-| **Standard Logging** | `console.log()`, `console.info()`, `console.warn()`, `console.error()`, `console.debug()`, `console.trace()` |
-| **Data & Inspection** | `console.dir()`, `console.table()`, `console.assert()`, `console.clear()` |
-| **Timers & Counters** | `console.time()`, `console.timeEnd()`, `console.timeLog()`, `console.count()`, `console.countReset()` |
-| **Grouping** | `console.group()`, `console.groupCollapsed()`, `console.groupEnd()` |
+| Category              | Supported Statements                                                                                         |
+| :-------------------- | :----------------------------------------------------------------------------------------------------------- |
+| **Standard Logging**  | `console.log()`, `console.info()`, `console.warn()`, `console.error()`, `console.debug()`, `console.trace()` |
+| **Data & Inspection** | `console.dir()`, `console.table()`, `console.assert()`, `console.clear()`                                    |
+| **Timers & Counters** | `console.time()`, `console.timeEnd()`, `console.timeLog()`, `console.count()`, `console.countReset()`        |
+| **Grouping**          | `console.group()`, `console.groupCollapsed()`, `console.groupEnd()`                                          |
 
 ---
 
@@ -52,17 +51,18 @@ All commands are available via the VS Code **Command Palette** (`Cmd+Shift+P` / 
 
 ### Target & Selection Commands
 
-| Command Title | Command ID | Description |
-| :--- | :--- | :--- |
+| Command Title                                                     | Command ID                              | Description                                                   |
+| :---------------------------------------------------------------- | :-------------------------------------- | :------------------------------------------------------------ |
 | **Console Log Cleaner: Remove Console Statements From Selection** | `consoleLogCleaner.removeFromSelection` | Removes console statements within highlighted selection only. |
-| **Console Log Cleaner: Remove Enabled Console Statements** | `consoleLogCleaner.removeEnabled` | Removes methods listed in `consoleLogCleaner.enabledMethods`. |
-| **Console Log Cleaner: Remove All Console Statements** | `consoleLogCleaner.removeAll` | Removes all 18 console methods from current file. |
-| **Console Log Cleaner: Remove Console Logs From Current File** | `consoleLogCleaner.removeCurrentFile` | Legacy command removing `console.log()` from active editor. |
-| **Console Log Cleaner: Remove Console Logs From Workspace** | `consoleLogCleaner.removeWorkspace` | Workspace-wide scanner and batch removal tool. |
+| **Console Log Cleaner: Remove Enabled Console Statements**        | `consoleLogCleaner.removeEnabled`       | Removes methods listed in `consoleLogCleaner.enabledMethods`. |
+| **Console Log Cleaner: Remove All Console Statements**            | `consoleLogCleaner.removeAll`           | Removes all 18 console methods from current file.             |
+| **Console Log Cleaner: Remove Console Logs From Current File**    | `consoleLogCleaner.removeCurrentFile`   | Legacy command removing `console.log()` from active editor.   |
+| **Console Log Cleaner: Remove Console Logs From Workspace**       | `consoleLogCleaner.removeWorkspace`     | Workspace-wide scanner and batch removal tool.                |
 
 ### Individual Method Commands
 
 You can run individual removal commands for every console method:
+
 - `Console Log Cleaner: Remove console.log`
 - `Console Log Cleaner: Remove console.info`
 - `Console Log Cleaner: Remove console.warn`
@@ -111,6 +111,7 @@ Configure behavior in VS Code Settings (`Cmd+,` / `Ctrl+,`):
 ## 🔒 Safety & Security
 
 Console Log Cleaner operates **100% locally** on your machine.
+
 - Zero source code uploads or external API requests.
 - Zero telemetry collection.
 - Zero raw regex deletions on arbitrary files.
