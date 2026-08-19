@@ -1,8 +1,8 @@
 {
   "name": "console-log-cleaner",
   "displayName": "Console Log Cleaner",
-  "description": "Find and safely remove console.log() statements from JavaScript and TypeScript files using AST parsing.",
-  "version": "0.1.3",
+  "description": "Find and safely remove console.log(), console.warn(), console.error() and all 18 console statements from JavaScript and TypeScript files using AST parsing.",
+  "version": "0.2.0",
   "publisher": "iMuskanDev",
   "icon": "icon.png",
   "engines": {
@@ -36,12 +36,39 @@
     "onCommand:consoleLogCleaner.removeWorkspace",
     "onCommand:consoleLogCleaner.scanCurrentFile",
     "onCommand:consoleLogCleaner.scanWorkspace",
+    "onCommand:consoleLogCleaner.removeLog",
+    "onCommand:consoleLogCleaner.removeInfo",
+    "onCommand:consoleLogCleaner.removeWarn",
+    "onCommand:consoleLogCleaner.removeError",
+    "onCommand:consoleLogCleaner.removeDebug",
+    "onCommand:consoleLogCleaner.removeTrace",
+    "onCommand:consoleLogCleaner.removeDir",
+    "onCommand:consoleLogCleaner.removeTable",
+    "onCommand:consoleLogCleaner.removeTime",
+    "onCommand:consoleLogCleaner.removeTimeEnd",
+    "onCommand:consoleLogCleaner.removeTimeLog",
+    "onCommand:consoleLogCleaner.removeCount",
+    "onCommand:consoleLogCleaner.removeCountReset",
+    "onCommand:consoleLogCleaner.removeAssert",
+    "onCommand:consoleLogCleaner.removeClear",
+    "onCommand:consoleLogCleaner.removeGroup",
+    "onCommand:consoleLogCleaner.removeGroupCollapsed",
+    "onCommand:consoleLogCleaner.removeGroupEnd",
+    "onCommand:consoleLogCleaner.removeEnabled",
+    "onCommand:consoleLogCleaner.removeAll",
+    "onCommand:consoleLogCleaner.removeFromSelection",
     "onLanguage:javascript",
     "onLanguage:javascriptreact",
     "onLanguage:typescript",
     "onLanguage:typescriptreact"
   ],
   "contributes": {
+    "submenus": [
+      {
+        "id": "consoleLogCleanerSubmenu",
+        "label": "Console Log Cleaner"
+      }
+    ],
     "commands": [
       {
         "command": "consoleLogCleaner.removeCurrentFile",
@@ -58,8 +85,130 @@
       {
         "command": "consoleLogCleaner.scanWorkspace",
         "title": "Console Log Cleaner: Scan Workspace"
+      },
+      {
+        "command": "consoleLogCleaner.removeLog",
+        "title": "Console Log Cleaner: Remove console.log"
+      },
+      {
+        "command": "consoleLogCleaner.removeInfo",
+        "title": "Console Log Cleaner: Remove console.info"
+      },
+      {
+        "command": "consoleLogCleaner.removeWarn",
+        "title": "Console Log Cleaner: Remove console.warn"
+      },
+      {
+        "command": "consoleLogCleaner.removeError",
+        "title": "Console Log Cleaner: Remove console.error"
+      },
+      {
+        "command": "consoleLogCleaner.removeDebug",
+        "title": "Console Log Cleaner: Remove console.debug"
+      },
+      {
+        "command": "consoleLogCleaner.removeTrace",
+        "title": "Console Log Cleaner: Remove console.trace"
+      },
+      {
+        "command": "consoleLogCleaner.removeDir",
+        "title": "Console Log Cleaner: Remove console.dir"
+      },
+      {
+        "command": "consoleLogCleaner.removeTable",
+        "title": "Console Log Cleaner: Remove console.table"
+      },
+      {
+        "command": "consoleLogCleaner.removeTime",
+        "title": "Console Log Cleaner: Remove console.time"
+      },
+      {
+        "command": "consoleLogCleaner.removeTimeEnd",
+        "title": "Console Log Cleaner: Remove console.timeEnd"
+      },
+      {
+        "command": "consoleLogCleaner.removeTimeLog",
+        "title": "Console Log Cleaner: Remove console.timeLog"
+      },
+      {
+        "command": "consoleLogCleaner.removeCount",
+        "title": "Console Log Cleaner: Remove console.count"
+      },
+      {
+        "command": "consoleLogCleaner.removeCountReset",
+        "title": "Console Log Cleaner: Remove console.countReset"
+      },
+      {
+        "command": "consoleLogCleaner.removeAssert",
+        "title": "Console Log Cleaner: Remove console.assert"
+      },
+      {
+        "command": "consoleLogCleaner.removeClear",
+        "title": "Console Log Cleaner: Remove console.clear"
+      },
+      {
+        "command": "consoleLogCleaner.removeGroup",
+        "title": "Console Log Cleaner: Remove console.group"
+      },
+      {
+        "command": "consoleLogCleaner.removeGroupCollapsed",
+        "title": "Console Log Cleaner: Remove console.groupCollapsed"
+      },
+      {
+        "command": "consoleLogCleaner.removeGroupEnd",
+        "title": "Console Log Cleaner: Remove console.groupEnd"
+      },
+      {
+        "command": "consoleLogCleaner.removeEnabled",
+        "title": "Console Log Cleaner: Remove Enabled Console Statements"
+      },
+      {
+        "command": "consoleLogCleaner.removeAll",
+        "title": "Console Log Cleaner: Remove All Console Statements"
+      },
+      {
+        "command": "consoleLogCleaner.removeFromSelection",
+        "title": "Console Log Cleaner: Remove Console Statements From Selection"
       }
     ],
+    "menus": {
+      "editor/context": [
+        {
+          "submenu": "consoleLogCleanerSubmenu",
+          "group": "modification"
+        }
+      ],
+      "consoleLogCleanerSubmenu": [
+        {
+          "command": "consoleLogCleaner.removeLog",
+          "group": "1_individual@1"
+        },
+        {
+          "command": "consoleLogCleaner.removeWarn",
+          "group": "1_individual@2"
+        },
+        {
+          "command": "consoleLogCleaner.removeError",
+          "group": "1_individual@3"
+        },
+        {
+          "command": "consoleLogCleaner.removeDebug",
+          "group": "1_individual@4"
+        },
+        {
+          "command": "consoleLogCleaner.removeEnabled",
+          "group": "2_bulk@1"
+        },
+        {
+          "command": "consoleLogCleaner.removeAll",
+          "group": "2_bulk@2"
+        },
+        {
+          "command": "consoleLogCleaner.removeFromSelection",
+          "group": "3_selection@1"
+        }
+      ]
+    },
     "codeActions": [
       {
         "languages": [
@@ -77,10 +226,45 @@
       "type": "object",
       "title": "Console Log Cleaner",
       "properties": {
+        "consoleLogCleaner.enabledMethods": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "log",
+              "info",
+              "warn",
+              "error",
+              "debug",
+              "trace",
+              "dir",
+              "table",
+              "time",
+              "timeEnd",
+              "timeLog",
+              "count",
+              "countReset",
+              "assert",
+              "clear",
+              "group",
+              "groupCollapsed",
+              "groupEnd"
+            ]
+          },
+          "default": [
+            "log"
+          ],
+          "description": "Console methods targeted by bulk cleanup (Remove Enabled Console Statements)."
+        },
+        "consoleLogCleaner.previewBeforeRemove": {
+          "type": "boolean",
+          "default": false,
+          "description": "Show changes in a VS Code side-by-side diff preview before applying console statement removal."
+        },
         "consoleLogCleaner.includeTests": {
           "type": "boolean",
           "default": true,
-          "description": "Include test files when scanning or removing console.log() statements."
+          "description": "Include test files when scanning or removing console statements."
         },
         "consoleLogCleaner.includeNodeModules": {
           "type": "boolean",
@@ -129,7 +313,7 @@
     "lint": "eslint src --ext ts",
     "format": "prettier --check \"src/**/*.ts\"",
     "test": "npm run compile && npm run test:unit",
-    "test:unit": "mocha --require ./src/test/mochaSetup.js ./out/test/unitTest.test.js ./out/test/detector.test.js ./out/test/removal.test.js",
+    "test:unit": "mocha --require ./src/test/mochaSetup.js ./out/test/unitTest.test.js ./out/test/detector.test.js ./out/test/removal.test.js ./out/test/phase2Methods.test.js",
     "test:integration": "node ./out/test/runTest.js",
     "package": "vsce package",
     "validate": "./scripts/validate.sh"

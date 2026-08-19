@@ -1,34 +1,33 @@
 # Supported Languages & Statement Target Matrix
 
-## Current Released Languages (v0.1.0)
+## Current Released Languages (v0.2.0)
 
-| Language | Extensions | Target Statement | Strategy | Status |
+| Language | Extensions | Target Statements | Strategy | Status |
 | :--- | :--- | :--- | :--- | :--- |
-| **JavaScript** | `.js`, `.mjs`, `.cjs` | `console.log(...)` | AST (`TypeScript Compiler API`) | **Supported** |
-| **TypeScript** | `.ts` | `console.log(...)` | AST (`TypeScript Compiler API`) | **Supported** |
-| **React JSX** | `.jsx` | `console.log(...)` | AST (`TypeScript Compiler API`) | **Supported** |
-| **React TSX** | `.tsx` | `console.log(...)` | AST (`TypeScript Compiler API`) | **Supported** |
+| **JavaScript** | `.js`, `.mjs`, `.cjs` | All 18 `console.*` methods | AST (`TypeScript Compiler API`) | **Supported** |
+| **TypeScript** | `.ts` | All 18 `console.*` methods | AST (`TypeScript Compiler API`) | **Supported** |
+| **React JSX** | `.jsx` | All 18 `console.*` methods | AST (`TypeScript Compiler API`) | **Supported** |
+| **React TSX** | `.tsx` | All 18 `console.*` methods | AST (`TypeScript Compiler API`) | **Supported** |
 
 ---
 
-## Detection Constraints (v0.1.0)
+## Supported Console Methods (18 Methods)
 
-The initial version of Console Log Cleaner is intentionally conservative to prevent false positive code removal.
+| Category | Supported Statements |
+| :--- | :--- |
+| **Standard Logging** | `console.log()`, `console.info()`, `console.warn()`, `console.error()`, `console.debug()`, `console.trace()` |
+| **Data & Inspection** | `console.dir()`, `console.table()`, `console.assert()`, `console.clear()` |
+| **Timers & Counters** | `console.time()`, `console.timeEnd()`, `console.timeLog()`, `console.count()`, `console.countReset()` |
+| **Grouping** | `console.group()`, `console.groupCollapsed()`, `console.groupEnd()` |
 
-### Active Detection Target:
-- `console.log(...)`
+---
 
-### Explicitly Excluded Targets in v0.1.0:
-- `console.error(...)` (Planned)
-- `console.warn(...)` (Planned)
-- `console.info(...)` (Planned)
-- `console.debug(...)` (Planned)
-- `console.trace(...)` (Planned)
-- `window.console.log(...)`
-- `globalThis.console.log(...)`
-- `console["log"](...)`
-- `const c = console; c.log(...)`
-- `obj.console.log(...)`
+## Excluded Targets (Protection Safety)
+
+The AST parser distinguishes executable code from strings and comments:
+- Commented code (e.g. `// console.warn("test")` or `/* console.error("test") */`) is **never** removed.
+- String literals (e.g. `const text = "console.log"`) are **never** removed.
+- Global/Object prefix expressions (e.g. `window.console.log()`, `globalThis.console.log()`, `obj.console.log()`, `console["log"]()`) are **never** removed.
 
 ---
 

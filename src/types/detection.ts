@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
+import { ConsoleMethod } from '../console/consoleMethods';
 
-export type StatementType = 'console.log';
+export type StatementType = `console.${ConsoleMethod}` | 'console.log' | ConsoleMethod;
 
 export interface DetectionResult {
   /**
@@ -9,9 +10,14 @@ export interface DetectionResult {
   id: string;
 
   /**
-   * Detected statement classification (e.g. 'console.log').
+   * Detected statement method name (e.g. 'log', 'info', 'warn', 'error').
    */
   type: StatementType;
+
+  /**
+   * Specific console method name.
+   */
+  method: ConsoleMethod;
 
   /**
    * VS Code language ID of source file.

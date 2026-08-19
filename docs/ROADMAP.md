@@ -2,21 +2,21 @@
 
 ## Release Roadmap
 
-### v0.1.x (Current Initial Target)
+### v0.1.x (Initial Target)
 - [x] Core AST detection engine for JavaScript, TypeScript, JSX, and TSX files using TypeScript Compiler API.
 - [x] Decoupled `LanguageAdapter` plugin architecture.
-- [x] Conservative `console.log(...)` detection scope.
 - [x] Workspace & single-file scanning and removal commands.
 - [x] Quick Fix Code Action (`Remove console.log()`).
 - [x] Native `WorkspaceEdit` with undo integration (`Cmd+Z`).
 
-### v0.2.x
-- [ ] Scanning preview diff provider before workspace removal.
-- [ ] Ignore directive comments (e.g. `// console-log-cleaner-ignore`).
-- [ ] Performance enhancements for large mono-repositories with worker threads.
-
-### v0.3.x
-- [ ] Additional JavaScript console statement variants (`console.error`, `console.warn`, `console.info`, `console.debug`, `console.trace`).
+### v0.2.x (Phase 2 Expansion)
+- [x] Expand detection to all 18 standard JavaScript/TypeScript console methods (`log`, `info`, `warn`, `error`, `debug`, `trace`, `dir`, `table`, `time`, `timeEnd`, `timeLog`, `count`, `countReset`, `assert`, `clear`, `group`, `groupCollapsed`, `groupEnd`).
+- [x] 18 individual console method removal commands.
+- [x] Bulk cleanup using `consoleLogCleaner.enabledMethods`.
+- [x] Selection-based console statement removal (`consoleLogCleaner.removeFromSelection`).
+- [x] Optional side-by-side diff preview window before removal (`consoleLogCleaner.previewBeforeRemove`).
+- [x] Editor context menu integration (`Console Log Cleaner`).
+- [x] Paired methods handling abstraction (`src/console/pairedMethods.ts`).
 
 ### Future Expansion (Planned Language Adapters)
 - [ ] **Python Adapter**: `PythonAdapter` for `print(...)` detection.

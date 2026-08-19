@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import { DetectionResult } from '../types/detection';
 import { LanguageRegistry } from '../languages/core/LanguageRegistry';
+import { ConsoleMethod } from '../console/consoleMethods';
 import { Logger } from '../utils/logger';
 
 export class DetectorEngine {
@@ -10,13 +11,11 @@ export class DetectorEngine {
     this.registry = registry ?? LanguageRegistry.getInstance();
   }
 
-  /**
-   * Detects logging statements in source text using the appropriate LanguageAdapter.
-   */
   public detectInText(
     sourceText: string,
     uri: vscode.Uri,
-    languageId: string
+    languageId: string,
+    targetMethods?: readonly ConsoleMethod[]
   ): DetectionResult[] {
     const adapter = this.registry.getAdapterForLanguage(languageId) ||
                     this.registry.getAdapterForFile(uri.fsPath);
@@ -27,18 +26,18 @@ export class DetectorEngine {
     }
 
     try {
-      return adapter.detect(sourceText, uri, languageId);
+      return adapter.detect(sourceText, uri, languageId, targetMethods);
     } catch (err) {
       Logger.error(`Error executing detection on ${uri.fsPath}`, err);
       return [];
     }
   }
 
-  /**
-   * Detects logging statements in a open VS Code TextDocument.
-   */
-  public detectInDocument(document: vscode.TextDocument): DetectionResult[] {
+  public detectInDocument(
+    document: vscode.TextDocument,
+    targetMethods?: readonly ConsoleMethod[]
+  ): DetectionResult[] {
     const text = document.getText();
-    return this.detectInText(text, document.uri, document.languageId);
+    return this.detectInText(text, document.uri, document.languageId, targetMethods);
   }
 }

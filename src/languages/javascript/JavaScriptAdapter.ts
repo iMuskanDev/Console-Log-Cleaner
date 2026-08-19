@@ -3,6 +3,7 @@ import { LanguageAdapter } from '../core/LanguageAdapter';
 import { DetectionResult } from '../../types/detection';
 import { TypeScriptDetector } from './TypeScriptDetector';
 import { RemovalStrategy } from '../core/RemovalStrategy';
+import { ConsoleMethod } from '../../console/consoleMethods';
 
 export class JavaScriptAdapter implements LanguageAdapter {
   public readonly name = 'JavaScript/TypeScript Adapter';
@@ -26,9 +27,10 @@ export class JavaScriptAdapter implements LanguageAdapter {
   public detect(
     sourceText: string,
     uri: vscode.Uri,
-    languageId: string
+    languageId: string,
+    targetMethods?: readonly ConsoleMethod[]
   ): DetectionResult[] {
-    return TypeScriptDetector.detectConsoleLogs(sourceText, uri, languageId);
+    return TypeScriptDetector.detectConsoleLogs(sourceText, uri, languageId, targetMethods);
   }
 
   public calculateRemovalEdit(

@@ -1,21 +1,28 @@
 import * as ts from 'typescript';
 import * as vscode from 'vscode';
 import { DetectionResult } from '../../types/detection';
-import { createRangeFromOffsets } from '../../utils/rangeUtils';
+import { ConsoleMethod, isConsoleMethod } from '../../console/consoleMethods';
 import { RemovalStrategy } from '../core/RemovalStrategy';
 
 export class TypeScriptDetector {
   /**
    * Parses JavaScript/TypeScript source code using TypeScript Compiler API (AST)
-   * and returns structured DetectionResult items for console.log() statements.
+   * and returns structured DetectionResult items for target console methods.
+   *
+   * @param sourceText Source code text
+   * @param uri Document URI
+   * @param languageId Language ID
+   * @param targetMethods Optional list of specific ConsoleMethods to target. If omitted, matches all 18 methods.
    */
   public static detectConsoleLogs(
     sourceText: string,
     uri: vscode.Uri,
-    languageId: string
+    languageId: string,
+    targetMethods?: readonly ConsoleMethod[]
   ): DetectionResult[] {
     const results: DetectionResult[] = [];
     const scriptKind = TypeScriptDetector.getScriptKind(languageId, uri.fsPath);
+    const methodFilter = targetMethods ? new Set(targetMethods) : null;
 
     let sourceFile: ts.SourceFile;
     try {
@@ -27,7 +34,6 @@ export class TypeScriptDetector {
         scriptKind
       );
     } catch (err) {
-      // If parsing fails completely due to malformed source, return empty results safely
       return results;
     }
 
@@ -35,7 +41,8 @@ export class TypeScriptDetector {
 
     const visit = (node: ts.Node): void => {
       if (ts.isCallExpression(node)) {
-        if (TypeScriptDetector.isTargetConsoleLogCall(node)) {
+        const method = TypeScriptDetector.getConsoleMethodName(node);
+        if (method && (!methodFilter || methodFilter.has(method))) {
           detectionCounter++;
           const targetNode = ts.isExpressionStatement(node.parent) ? node.parent : node;
 
@@ -59,12 +66,13 @@ export class TypeScriptDetector {
           const matchedText = sourceText.substring(startOffset, endOffset);
 
           results.push({
-            id: `console-log-${uri.fsPath}-${startOffset}-${detectionCounter}`,
-            type: 'console.log',
+            id: `console-${method}-${uri.fsPath}-${startOffset}-${detectionCounter}`,
+            type: `console.${method}`,
+            method,
             languageId,
             uri,
             range,
-            line: startLineChar.line + 1, // 1-indexed
+            line: startLineChar.line + 1,
             sourceText: matchedText,
             confidence: 1.0,
             removalRange
@@ -81,28 +89,30 @@ export class TypeScriptDetector {
   }
 
   /**
-   * Strict identification of console.log(...) CallExpressions.
-   * Rejects window.console.log, globalThis.console.log, console["log"], obj.console.log, c.log, etc.
+   * Identifies if node is a console.<method>(...) call and returns method name.
+   * Rejects window.console.log, globalThis.console.log, console["log"], obj.console.log, etc.
    */
-  private static isTargetConsoleLogCall(node: ts.CallExpression): boolean {
+  private static getConsoleMethodName(node: ts.CallExpression): ConsoleMethod | null {
     const expr = node.expression;
 
-    // Must be a property access expression (console.log)
     if (!ts.isPropertyAccessExpression(expr)) {
-      return false;
+      return null;
     }
 
-    // Left identifier MUST be 'console'
     if (!ts.isIdentifier(expr.expression) || expr.expression.text !== 'console') {
-      return false;
+      return null;
     }
 
-    // Property name MUST be 'log'
-    if (!ts.isIdentifier(expr.name) || expr.name.text !== 'log') {
-      return false;
+    if (!ts.isIdentifier(expr.name)) {
+      return null;
     }
 
-    return true;
+    const methodName = expr.name.text;
+    if (isConsoleMethod(methodName)) {
+      return methodName;
+    }
+
+    return null;
   }
 
   private static getScriptKind(languageId: string, filePath: string): ts.ScriptKind {

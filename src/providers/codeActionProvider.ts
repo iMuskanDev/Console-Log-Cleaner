@@ -53,8 +53,9 @@ export class ConsoleLogCodeActionProvider implements vscode.CodeActionProvider {
     const actions: vscode.CodeAction[] = [];
 
     for (const detection of targetedDetections) {
+      const actionTitle = `Remove console.${detection.method}()`;
       const action = new vscode.CodeAction(
-        'Remove console.log()',
+        actionTitle,
         vscode.CodeActionKind.QuickFix
       );
       action.isPreferred = true;
