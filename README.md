@@ -14,14 +14,6 @@ Whether you are shipping code to production, cleaning up leftover debug statemen
 
 ---
 
-## ☕ Support the Project
-
-If Console Log Cleaner saved you time or cleaned up your project, consider supporting development!
-
-https://bondin.io/imuskandev/support
-
----
-
 ## ✨ Features
 
 - ⚡ **Full 18 Console Methods**: Supports `console.log`, `info`, `warn`, `error`, `debug`, `trace`, `dir`, `table`, `time`, `timeEnd`, `timeLog`, `count`, `countReset`, `assert`, `clear`, `group`, `groupCollapsed`, and `groupEnd`.
